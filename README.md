@@ -1,7 +1,7 @@
 # Payroll Project and Dashboard [(Live Report Publish)](https://app.powerbi.com/view?r=eyJrIjoiMmViZDYzYWUtZjVmMy00NDc4LWI2MDgtOGFlYmJhODg5NDViIiwidCI6IjZhNjhlMmQxLWQ4OGQtNDEyYi1iOTgyLWQ0YWVkNWY1MTcxNiJ9)
 This project is a system that helps businesses in tracking the Payroll system. The SQL script transforms raw data into datasets with appropriate format and no conflictions when reading. Then, I used Power BI Dashboard to visualize and draw meaningful insights. These findings will determine actions to either embracing it or reduce it.
 
-
+## Table of Contents
 - [1) Datasets](#1-datasets)
 - [2) Dashboard Overview](#2-dashboard-overview)
 - [3) Data Transformation](#3-data-transformation)
