@@ -1,10 +1,16 @@
-# Payroll Project [(Live Report Publish)](https://app.powerbi.com/view?r=eyJrIjoiMmViZDYzYWUtZjVmMy00NDc4LWI2MDgtOGFlYmJhODg5NDViIiwidCI6IjZhNjhlMmQxLWQ4OGQtNDEyYi1iOTgyLWQ0YWVkNWY1MTcxNiJ9)
+# Payroll Project and Dashboard [(Live Report Publish)](https://app.powerbi.com/view?r=eyJrIjoiMmViZDYzYWUtZjVmMy00NDc4LWI2MDgtOGFlYmJhODg5NDViIiwidCI6IjZhNjhlMmQxLWQ4OGQtNDEyYi1iOTgyLWQ0YWVkNWY1MTcxNiJ9)
 This project is a system that helps businesses in tracking the Payroll system. The SQL script transforms raw data into datasets with appropriate format and no conflictions when reading. Then, I used Power BI Dashboard to visualize and draw meaningful insights. These findings will determine actions to either embracing it or reduce it.
 
 
+- [1) Datasets](#1-datasets)
+- [2) Dashboard Overview](#2-dashboard-overview)
+- [3) Data Transformation](#3-data-transformation)
+- [4) Dashboard Relationships](#4-dashboard-relationships)
+- [5) Insights](#5-insights)
+
 ---
 
-## About Dataset:
+## 1) Datasets:
 
 The datasets includes 14 files that are in .csv format:
 - **Allowance**: Extra payments made to employees within specific periods. There are
@@ -21,7 +27,7 @@ active status, pay rate, etc.
 - **Employee leaves**: List of leaves recorded.
 - **Junior pay rates**: Wages for employees within specific age group.
 
-## Project Overview
+## 2) Dashboard Overview:
 
 ### Dashboard Preview Screenshot:
 These are my dashboard screenshots. Further Report can be view in here: [Report Link](https://github.com/minhD03/Payroll-Project/blob/9531a8b92243f0e47f6c6749846aaf5dfaa170df/Payroll%20Report-%20Nhat%20Minh%20Dang.pdf)
@@ -31,7 +37,7 @@ These are my dashboard screenshots. Further Report can be view in here: [Report 
 ![alt text](https://github.com/minhD03/Payroll-Project/blob/34def8fb7416c1a571bd876d1d7e0f672d19944f/Images/Dashboard%202.png)
 ---
 
-## Data Transformation Process:
+## 3) Data Transformation:
 
 ![alt text](https://github.com/minhD03/Payroll-Project/blob/686a75198d95fc25bf522e353ad8ec660bc325d0/Images/Medallion%20Architecture.jpg)
 
@@ -43,7 +49,8 @@ After importing datasets into SQL Server, I divided the tables into **Dimension 
 
 In the SQL script, I started by transforming raw landing data into clean, structured staging tables, selecting key columns across HR, payroll and roster files. Then, I standardized formats, renamed fields and mapped identifiers like employee_code to employee_id. In addition, in the marts layer, I built dimension tables by hashing keys (e.g., employee_pk, contract_pk), converting percentages to multipliers and aggregating pay periods. For fact tables, I joined staging data with dimensions using surrogate keys and date logic, ensuring each record was contextualized by contract, employee and pay period. This layered approach supports robust analytics and executive reporting.
 
-## Dashboard Relationships:
+## 4) Dashboard Relationships:
+
 When creating Power Bi Dashboard, these are the relationships that I connected:
 | From Table (Column)                  | Relationship Type | To Table (Column)                     |
 |-------------------------------------|-------------------|---------------------------------------|
@@ -64,7 +71,7 @@ When creating Power Bi Dashboard, these are the relationships that I connected:
 | `dim_date(date_pk)`| One to Many      | `fact_timehseet(timesheet)_transition_date_fk)`         | 
 | `dim_date(date_pk)`| One to Many      | `fact_employee_leaves(leave_start_date_fk)`          | 
 
-# Insights gained:
+# 5) Insights:
 ## 🧑‍💼 Employee Type & Job Title Distribution
 
 - **Employment type balance**: Part-time, Full-time and Casual employees each represent ~33%.
