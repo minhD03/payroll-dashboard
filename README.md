@@ -7,7 +7,7 @@ This project is a system that helps businesses in tracking the Payroll system. T
 - [3) Data Transformation](#3-data-transformation)
 - [4) Dashboard Relationships](#4-dashboard-relationships)
 - [5) Insights](#5-insights)
-
+- [6) Conclusion](#6-conclusion)
 ---
 
 ## 1) Datasets:
@@ -41,11 +41,11 @@ These are my dashboard screenshots. Further Report can be view in here: [Report 
 
 ![alt text](https://github.com/minhD03/Payroll-Project/blob/686a75198d95fc25bf522e353ad8ec660bc325d0/Images/Medallion%20Architecture.jpg)
 
-In this project, I will use three data schemas: Landing, Staging and Mart. These schemas represent three steps in Medallion Architecture. Medallion architecture is a powerful data design pattern used in modern Lakehouse systems to progressively refine and organize data across three distinct layers—Bronze, Silver and Gold—each representing a step in data quality and usability. At its foundation, the Bronze layer ingests raw, unprocessed data from diverse sources such as CRM, ERP or LOB systems, preserving its original form for traceability and historical analysis. This raw data then flows into the Silver layer, where it undergoes cleaning, validation and enrichment—removing duplicates, standardizing formats, and integrating disparate datasets to create a more coherent and reliable view. Finally, the Gold layer transforms this refined data into business-ready assets through dimensional modelling, aggregation and domain-specific enhancements, making it ideal for executive dashboards, machine learning models and advanced analytics. This tiered approach not only ensures data integrity and governance but also enables modular development, scalability and efficient collaboration across data engineering, analytics, and decision-making teams. By separating concerns and incrementally improving data quality, medallion architecture empowers organizations to build robust, flexible pipelines that support both operational reporting and strategic insights.
+In this project, I will use three data schemas: Landing, Staging and Mart. These schemas represent three steps in Medallion Architecture. Medallion architecture is a powerful data design pattern used in modern Lakehouse systems to progressively refine and organize data across three distinct layers Bronze, Silver and Gold—each representing a step in data quality and usability. At its foundation, the Bronze layer ingests raw, unprocessed data from diverse sources such as CRM, ERP or LOB systems, preserving its original form for traceability and historical analysis. This raw data then flows into the Silver layer, where it undergoes cleaning, validation and enrichment, removing duplicates, standardizing formats, and integrating disparate datasets to create a more coherent and reliable view. Finally, the Gold layer transforms this refined data into business-ready assets through dimensional modelling, aggregation and domain-specific enhancements, making it ideal for executive dashboards, machine learning models and advanced analytics. This tiered approach not only ensures data integrity and governance but also enables modular development, scalability and efficient collaboration across data engineering, analytics, and decision-making teams. By separating concerns and incrementally improving data quality, medallion architecture empowers organizations to build robust, flexible pipelines that support both operational reporting and strategic insights.
 
 Because the Date table was created individually, it was put into the Mart layer. For other files, they were imported into Landing layer.
 
-After importing datasets into SQL Server, I divided the tables into **Dimension Table** and **Fact Table**. In a data warehouse, **Dimension Table** provide descriptive context—like employee details, contract terms or pay rate categories—that help slice and filter data. They’re typically wide and relatively static. **Fact Table**, on the other hand, store measurable events—such as allowances, bonuses, timesheets or rosters—and link to dimensions using surrogate keys. These tables are optimized for aggregations, reporting and analytical queries.
+After importing datasets into SQL Server, I divided the tables into **Dimension Table** and **Fact Table**. In a data warehouse, **Dimension Table** provide descriptive context like employee details, contract terms or pay rate categories that help slice and filter data. They’re typically wide and relatively static. **Fact Table**, on the other hand, store measurable events such as allowances, bonuses, timesheets or rosters and link to dimensions using surrogate keys. These tables are optimized for aggregations, reporting and analytical queries.
 
 In the SQL script, I started by transforming raw landing data into clean, structured staging tables, selecting key columns across HR, payroll and roster files. Then, I standardized formats, renamed fields and mapped identifiers like employee_code to employee_id. In addition, in the marts layer, I built dimension tables by hashing keys (e.g., employee_pk, contract_pk), converting percentages to multipliers and aggregating pay periods. For fact tables, I joined staging data with dimensions using surrogate keys and date logic, ensuring each record was contextualized by contract, employee and pay period. This layered approach supports robust analytics and executive reporting.
 
@@ -72,109 +72,34 @@ When creating Power Bi Dashboard, these are the relationships that I connected:
 | `dim_date(date_pk)`| One to Many      | `fact_employee_leaves(leave_start_date_fk)`          | 
 
 # 5) Insights:
-## 🧑‍💼 Employee Type & Job Title Distribution
 
-- **Employment type balance**: Part-time, Full-time and Casual employees each represent ~33%.
-  - ✅ **Positive Insight**: Risk exposure is evenly distributed across contract types.
-  - 💡 **Recommendation**: Maintain this equilibrium to support operational flexibility and workforce resilience.
+## a) Workforce Composition & Contracts
+- Employment types (Part-time, Full-time, Casual) are evenly split at ~33% each.
+- Casual contracts dominate overall (50k vs 20k full-time), with Full-time demand rising post-2025.
+- IT Support Specialist, Security Guard, and Software Developer make up 19% of all roles.
+- IT Support is mostly part-time/casual with demand only emerging from 2025 (short-term signal).
+- Software Developer relies heavily on casual staff (~half) but delivers high payroll value.
+- Administrative Assistant shows full-time dominance and stable, low-fluctuation payroll.
+- 70% of contracts are active, 24% expired, 6% terminated.
 
-- **Job title concentration**: IT Support Specialist, Security Guard and Software Developer collectively account for 19% of roles.
-  - ⚠️ **Risk Indicator**: These roles are payroll-sensitive due to their high representation.
-  - 🛠 **Action**: Prioritize payroll audits and contract reviews for these positions to mitigate systemic mismatches.
+## b) Payroll Risk & Financial Trends
+- Overpayments ($5.39M) far outweigh underpayments ($34.8K), a major financial exposure.
+- Paid amounts surged post-June 2024 while Mandatory amounts rose only modestly (disproportionate growth).
+- 2022–2024 saw fluctuations (Paid: 0.06M–0.08M; Mandatory: 0.04M–0.05M) tied to COVID-era disruption.
+- Expired/terminated contracts pose ongoing payroll discrepancy risk.
 
----
-
-## 📊 Contract Status & Payroll Risk
-
-- **Active contracts dominate**: 70% active, 24% expired, and 6% terminated.
-  - ✅ **Positive Insight**: Reflects strong employee retention and effective HR policies.
-  - ⚠️ **Risk Indicator**: Expired and terminated contracts may contribute to payroll discrepancies.
-  - 🛠 **Action**: Implement automated alerts for contract expirations and reinforce offboarding protocols.
-
-- **Payroll discrepancy**: $5.39M in overpayments vs $34.8K in underpayments.
-  - ❌ **Negative Insight**: Overpayments represent a significant financial exposure.
-  - 🛠 **Action**: Enforce stricter payroll validation, conduct periodic audits and deploy anomaly detection mechanisms.
-
----
-
-## 📈 Payroll Trend Analysis (2021–Apr 2025)
-
-- **Post-COVID recovery**: Paid amounts surged post-June 2024, while Mandatory amounts rose modestly.
-  - ⚠️ **Risk Indicator**: Disproportionate growth suggests inefficiencies or inflated compensation.
-  - 🛠 **Action**: Align paid amounts with mandatory benchmarks and consider performance-based compensation adjustments.
-
-- **2022–2024 fluctuations**: Paid amounts ranged from 0.06M–0.08M; Mandatory amounts from 0.04M–0.05M.
-  - 📉 **Cause**: COVID-related disruptions impacted workforce stability and budgeting.
-  - 💡 **Recommendation**: Use this period as a baseline for resilience modeling and payroll elasticity planning.
+## c) Employee Workload & Well-being
+- Company-wide: ~30k overtime hours vs 2.26k undertime hours over 5 years, alongside ~1M bonus cards and 26.5k allowance cards.
+- 2025 saw a spike to 390 overtime hours in just four months, possible burnout/staffing gap signal.
+- Individual patterns vary widely:
+  - Aaron Morales: balanced overtime/undertime with regular leave (healthy benchmark).
+  - Rober: notable overtime-undertime gap, suggesting possible underutilization.
+  - Eric: ~740 overtime hours with almost no leave, high burnout risk.
 
 ---
 
-## 📃 Contract Type Breakdown
-
-- **Casual contracts dominate**: 50k vs 20k for full-time roles.
-  - ⚠️ **Risk Indicator**: Heavy reliance on casual staff may lead to performance volatility.
-  - 🛠 **Action**: Diversify workforce strategy and invest in full-time talent pipelines to stabilize operations.
-
-- **Full-time demand post-2025**: Paid amounts for full-time roles increased significantly.
-  - ✅ **Positive Insight**: Indicates strategic hiring aligned with peak operational periods.
-  - 💡 **Recommendation**: Continue leveraging full-time roles for core functions and scale with part-time/casual staff as needed.
-
----
-
-## 🧑‍💻 Role-Specific Insights
-
-- **IT Support Specialist**:
-  - Predominantly filled by part-time and casual contracts.
-  - Demand growth observed only from 2025 onward.
-  - ⚠️ **Risk Indicator**: Suggests short-term demand; not a strategic long-term role.
-  - 🛠 **Action**: Consider outsourcing or flexible staffing models to manage this function efficiently.
-
-- **Software Developer**:
-  - Casual contracts represent nearly half of the workforce in this role.
-  - Paid and mandatory amounts are significantly higher than IT Support.
-  - ✅ **Positive Insight**: High value contribution despite short-term contracts.
-  - 💡 **Recommendation**: Adopt hybrid staffing models — retain core developers full-time and supplement with contractors during high-demand cycles.
-
----
-
-## 🧑‍💼 Administrative Assistant Role
-
-- **Full-time dominance** with minimal fluctuation in payroll metrics.
-  - ✅ **Positive Insight**: Indicates operational stability and high dependency.
-  - 💡 **Recommendation**: Treat Administrative Assistants as strategic assets. Invest in retention programs, career development and performance-based incentives.
-  - 🛠 **Action**: Prioritize this role in workforce planning to ensure continuity and reduce operational risk.
-
----
-
-## 👥 Employee-Level Analysis
-
-- **Company-wide hours**: ~30k overtime vs 2.26k undertime over 5 years.
-  - ✅ **Positive Insight**: High demand met with generous rewards — nearly 1M bonus cards and 26.5k allowance cards.
-  - 💡 **Recommendation**: Maintain balance between workload and incentives to support employee well-being.
-
-- **2025 peak**: Overtime demand spiked to 390 hours in the first four months.
-  - ⚠️ **Risk Indicator**: Potential burnout or staffing gaps during peak periods.
-  - 🛠 **Action**: Forecast peak seasons and proactively scale staffing or implement flexible scheduling.
-
----
-
-## 🧑‍💼 Individual Employee Insights Examples
-
-- **Aaron Morales**:
-  - Overtime: 20–40 hours; Undertime: 1–3 hours; Regular leave every 2–3 months.
-  - ✅ **Positive Insight**: Balanced workload and personal life; consistent contributor.
-  - 💡 **Recommendation**: Use Aaron’s profile as a benchmark for sustainable employee engagement.
-
-- **Rober**:
-  - Overtime: 84 hours; Undertime: 22 hours; Larger gap between overtime and undertime.
-  - ⚠️ **Risk Indicator**: May reflect underutilization or role misalignment.
-  - 🛠 **Action**: Reassess role expectations and redistribute tasks to optimize productivity.
-
-- **Eric (minor position)**:
-  - Overtime: ~740 hours; Undertime: 0; Only 2 leave events in 5 years.
-  - ❌ **Negative Insight**: High workload with minimal rest — risk of burnout or disengagement.
-  - 🛠 **Action**: Recognize and reward high-effort employees. Introduce wellness checks, mandatory leave cycles and mental health support.
-
+# 6) Conclusion
+Overall, the workforce shows a structurally balanced contract mix but carries concentrated risk in a small set of payroll-sensitive roles and a heavy reliance on casual staffing, which together with a sharp post-2024 rise in paid amounts and a large overpayment exposure points to gaps in payroll validation and contract governance; at the same time, employee-level data reveals uneven workload distribution, from healthy, sustainable contributors to high-risk overtime cases like Eric, signaling that alongside financial controls, the organization should invest in proactive staffing forecasts, stronger offboarding and audit protocols, and targeted well-being interventions to protect both its finances and its people.
 
 
 
